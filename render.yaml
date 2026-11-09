@@ -1,0 +1,59 @@
+services:
+  - type: web
+    name: paperclip
+    runtime: node
+    region: oregon
+    plan: standard
+    branch: master
+    buildCommand: bash scripts/render-build.sh
+    startCommand: node server/dist/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "24.11.0"
+      - key: PORT
+        value: "3100"
+      # Public URL — set this to your Render service URL after first deploy
+      # e.g. https://paperclip.onrender.com
+      - key: PAPERCLIP_PUBLIC_URL
+        sync: false
+      # Authentication secret — generate with: openssl rand -hex 32
+      - key: BETTER_AUTH_SECRET
+        generateValue: true
+      # Agent JWT signing secret — can share value with BETTER_AUTH_SECRET
+      - key: PAPERCLIP_AGENT_JWT_SECRET
+        generateValue: true
+      # Tool-action signing secret
+      - key: PAPERCLIP_TOOL_ACTION_SIGNING_SECRET
+        generateValue: true
+      # Injected automatically by Render from the linked database
+      - key: DATABASE_URL
+        fromDatabase:
+          name: paperclip-db
+          property: connectionString
+      # Deployment exposure: "public" allows sign-up; "private" locks to invite only
+      - key: PAPERCLIP_DEPLOYMENT_EXPOSURE
+        value: public
+      # Bind on all interfaces so Render's proxy can reach the process
+      - key: HOST
+        value: "0.0.0.0"
+      # Disable DB backups in cloud (use Render managed backups instead)
+      - key: PAPERCLIP_DB_BACKUP_ENABLED
+        value: "false"
+      # Skip UI dev middleware — we serve the pre-built UI dist
+      - key: PAPERCLIP_UI_DEV_MIDDLEWARE
+        value: "false"
+      # Auto-apply pending migrations on startup (safe for first boot against
+      # an empty Render managed PostgreSQL database)
+      - key: PAPERCLIP_MIGRATION_AUTO_APPLY
+        value: "true"
+      # Never prompt interactively in a non-TTY deployment environment
+      - key: PAPERCLIP_MIGRATION_PROMPT
+        value: "never"
+
+databases:
+  - name: paperclip-db
+    region: oregon
+    plan: basic-256mb
+    databaseName: paperclip
+    postgresMajorVersion: "17"

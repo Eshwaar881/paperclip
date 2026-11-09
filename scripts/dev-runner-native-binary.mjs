@@ -66,6 +66,7 @@ export function paperclipRunnerBinaryNeedsBuild({
 }) {
   if (!nativeRunnerRequired) return false;
   if (configuredBinary?.trim()) return false;
+  if (platform === "win32") return false;
 
   const selected = resolveNativeRunnerDevBinary({ repoRoot, platform, architecture });
   if (!selected) return true;

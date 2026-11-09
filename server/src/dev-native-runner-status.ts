@@ -47,12 +47,15 @@ async function main(): Promise<void> {
     const persistedNativeRun =
       persistedActiveNativeRun || persistedRetryableFailedNativeRun;
 
+    const runnerSupported = localPaperclipRunnerSupported();
     console.log(
       JSON.stringify({
-        nativeRunnerRequired: localPaperclipRunnerSupported()
-          || experimental.enableNativeRunner === true
-          || experimental.enableOpenAiDot === true
-          || persistedNativeRun,
+        nativeRunnerRequired: runnerSupported
+          && (
+            experimental.enableNativeRunner === true
+            || experimental.enableOpenAiDot === true
+            || persistedNativeRun
+          ),
         rolloutEnabled: experimental.enableNativeRunner === true,
         dotRolloutEnabled: experimental.enableOpenAiDot === true,
         persistedNativeRun,

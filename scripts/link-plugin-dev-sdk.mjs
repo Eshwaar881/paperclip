@@ -8,7 +8,7 @@
 // plugin's own package.json so the published tarballs cannot carry a lifecycle
 // script that escapes their package directory at install time.
 
-import { existsSync, lstatSync, mkdirSync, readdirSync, readlinkSync, rmSync, symlinkSync } from "node:fs";
+import { cpSync, existsSync, lstatSync, mkdirSync, readdirSync, readlinkSync, rmSync, symlinkSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -78,11 +78,12 @@ export function linkSdkInto(packageDir) {
   try {
     const stat = lstatSync(linkTarget);
     if (stat.isSymbolicLink()) {
-      if (readlinkSync(linkTarget) === relativeSdkDir) {
+      const current = readlinkSync(linkTarget);
+      if (current === relativeSdkDir || (process.platform === "win32" && resolve(scopeDir, current) === resolve(sdkDir))) {
         // Already linked to the in-repo SDK; nothing to do.
         return false;
       }
-      rmSync(linkTarget, { force: true });
+      rmSync(linkTarget, { force: true, recursive: true });
     } else {
       // A real install has already populated @paperclipai/plugin-sdk (e.g. the
       // plugin host did `npm install` of the published tarball). Leave it.
@@ -93,6 +94,18 @@ export function linkSdkInto(packageDir) {
     if (error?.code !== "ENOENT") throw error;
   }
 
-  symlinkSync(relativeSdkDir, linkTarget, "dir");
+  const isWindows = process.platform === "win32";
+  try {
+    symlinkSync(isWindows ? sdkDir : relativeSdkDir, linkTarget, isWindows ? "junction" : "dir");
+  } catch (error) {
+    if (error?.code === "EPERM" && isWindows) {
+      cpSync(sdkDir, linkTarget, {
+        recursive: true,
+        filter: (src) => !src.includes("node_modules"),
+      });
+      return true;
+    }
+    throw error;
+  }
   return true;
 }
