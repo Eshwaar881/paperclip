@@ -65,3 +65,4 @@ PAPERCLIP_RELEASE_REUSE_UI_DIST=1 pnpm --filter @paperclipai/server build
 echo ""
 echo "==> Build complete."
 echo "    Start command: node server/dist/index.js"
+
