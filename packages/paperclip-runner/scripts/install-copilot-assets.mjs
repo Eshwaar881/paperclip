@@ -14,8 +14,8 @@ const runtimeRoot = vendored ? join(packageRoot, "dist/vendor/paperclip-runner")
 
 /** Install only the native npm package for this platform; never execute it. */
 export async function installCopilotAssets() {
-  if (process.env.VERCEL || process.env.NOW_BUILDER) {
-    return { status: "skipped-in-ci", target: "vercel" };
+  if (process.env.VERCEL || process.env.NOW_BUILDER || process.env.RENDER || process.env.CI) {
+    return { status: "skipped-in-ci", target: "ci" };
   }
   const { platform, arch: architecture } = process;
   const target = `${platform}-${architecture}`;
