@@ -3,7 +3,7 @@ services:
     name: paperclip
     runtime: node
     region: oregon
-    plan: standard
+    plan: free
     branch: master
     buildCommand: bash scripts/render-build.sh
     startCommand: node server/dist/index.js
@@ -54,6 +54,6 @@ services:
 databases:
   - name: paperclip-db
     region: oregon
-    plan: basic-256mb
+    plan: free
     databaseName: paperclip
     postgresMajorVersion: "17"
