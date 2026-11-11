@@ -69,6 +69,10 @@ echo "==> Building @paperclipai/server (includes copying ui-dist)..."
 PAPERCLIP_RELEASE_REUSE_UI_DIST=1 PAPERCLIP_SKIP_RUNNER_VENDOR_REBUILD=1 pnpm --filter @paperclipai/server build
 
 echo ""
+echo "==> Bundling server runtime (esbuild)..."
+pnpm --filter @paperclipai/server build:runtime
+
+echo ""
 echo "==> Build complete."
-echo "    Start command: node server/dist/index.js"
+echo "    Start command: node server/dist-runtime/index.mjs"
 

@@ -5,6 +5,10 @@
   "outputDirectory": "ui/dist",
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://paperclip-2vjw.onrender.com/api/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

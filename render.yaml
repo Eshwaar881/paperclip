@@ -6,7 +6,7 @@ services:
     plan: free
     branch: master
     buildCommand: bash scripts/render-build.sh
-    startCommand: node server/dist/index.js
+    startCommand: node server/dist-runtime/index.mjs
     healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION
