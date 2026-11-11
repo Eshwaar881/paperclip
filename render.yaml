@@ -31,6 +31,9 @@ services:
         fromDatabase:
           name: paperclip-db
           property: connectionString
+      # Deployment mode: "authenticated" required when binding to 0.0.0.0
+      - key: PAPERCLIP_DEPLOYMENT_MODE
+        value: authenticated
       # Deployment exposure: "public" allows sign-up; "private" locks to invite only
       - key: PAPERCLIP_DEPLOYMENT_EXPOSURE
         value: public
