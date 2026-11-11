@@ -35,11 +35,15 @@ import {
 /** The command the server build has always run here; the rebuild path is unchanged. */
 export const RUNNER_VENDOR_BUILD_COMMAND = "pnpm --filter @paperclipai/paperclip-runner build";
 export const FORCE_REBUILD_VARIABLE = "PAPERCLIP_RUNNER_VENDOR_REBUILD";
+export const SKIP_REBUILD_VARIABLE = "PAPERCLIP_SKIP_RUNNER_VENDOR_REBUILD";
 export const TIMING_SCHEMA = "paperclip.runner-vendor.timing.v1";
 
 export function decideRunnerVendorAction({ env, assessment }) {
   if (env[FORCE_REBUILD_VARIABLE] === "1") {
     return { action: "rebuild", code: "forced", detail: `${FORCE_REBUILD_VARIABLE}=1` };
+  }
+  if (env[SKIP_REBUILD_VARIABLE] === "1" || env.RENDER) {
+    return { action: "reuse", code: "skipped", detail: "skip runner vendor rebuild in cloud/Render" };
   }
   if (assessment.current) {
     return { action: "reuse", code: assessment.code, detail: assessment.detail };

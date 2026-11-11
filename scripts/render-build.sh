@@ -60,7 +60,9 @@ echo ""
 echo "==> Building @paperclipai/server (includes copying ui-dist)..."
 # PAPERCLIP_RELEASE_REUSE_UI_DIST=1 tells prepare-server-ui-dist.sh to reuse
 # the ui/dist we just built above instead of rebuilding it.
-PAPERCLIP_RELEASE_REUSE_UI_DIST=1 pnpm --filter @paperclipai/server build
+# PAPERCLIP_SKIP_RUNNER_VENDOR_REBUILD=1 reuses the runner TypeScript build we
+# just completed above instead of trying to run `cargo build` on Render.
+PAPERCLIP_RELEASE_REUSE_UI_DIST=1 PAPERCLIP_SKIP_RUNNER_VENDOR_REBUILD=1 pnpm --filter @paperclipai/server build
 
 echo ""
 echo "==> Build complete."
