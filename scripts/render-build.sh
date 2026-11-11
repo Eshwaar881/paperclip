@@ -18,6 +18,10 @@
 
 set -euo pipefail
 
+export NODE_OPTIONS="${NODE_OPTIONS:-} --max-old-space-size=3072"
+export PAPERCLIP_TSC_EMIT_ONLY=1
+export PAPERCLIP_TYPECHECK_LOW_MEMORY=1
+
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
